@@ -1,0 +1,15 @@
+name: AI PR Review Bot
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  notify-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send PR payload to external review service
+        env:
+          REVIEW_ENDPOINT: ${{ secrets.REVIEW_ENDPOINT }}
+        run: |
+          curl -X POST -H "Content-Type: application/json"                     -d "${{ toJson(github.event) }}"                     "$REVIEW_ENDPOINT"
