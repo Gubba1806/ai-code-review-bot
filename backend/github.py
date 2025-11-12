@@ -1,6 +1,8 @@
 import os
 import requests
-
+from dotenv import load_dotenv
+# GitHub configuration
+load_dotenv()
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
 if not GITHUB_TOKEN:

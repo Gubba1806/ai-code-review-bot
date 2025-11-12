@@ -3,6 +3,8 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from github import fetch_pr_diff, post_pr_comment
 from ai import generate_review
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI()
 
