@@ -7,7 +7,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI()
-
+@app.post("/")
+async def test():
+    return {"status": "ok"}
+    
 @app.post("/review")
 async def review_pr(request: Request):
     payload = await request.json()

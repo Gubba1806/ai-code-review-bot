@@ -1,15 +1,31 @@
-name: AI PR Review Bot
+name: Deploy to Azure VM
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+  push:
+    branches: ["main"]
 
 jobs:
-  notify-backend:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: self-hosted
+
     steps:
-      - name: Send PR payload to external review service
-        env:
-          REVIEW_ENDPOINT: ${{ secrets.REVIEW_ENDPOINT }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Copy project to server path
         run: |
-          curl -X POST -H "Content-Type: application/json"                     -d "${{ toJson(github.event) }}"                     "$REVIEW_ENDPOINT"
+          rm -rf /var/www/ai-bot/*
+          cp -r backend /var/www/ai-bot/
+
+      - name: Install dependencies
+        run: |
+          cd /var/www/ai-bot
+          source venv/bin/activate || python3 -m venv venv
+          source venv/bin/activate
+          pip install -r backend/requirements.txt
+
+      - name: Restart backend service
+        run: sudo systemctl restart ai-bot
+
+      - name: Check service status
+        run: sudo systemctl status ai-bot --no-pager
