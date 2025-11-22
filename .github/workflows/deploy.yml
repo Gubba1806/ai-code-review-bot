@@ -18,27 +18,23 @@ jobs:
         with:
           python-version: '3.10'
 
-      # Install backend dependencies (you can modify as needed)
+      # Install backend dependencies
       - name: Install backend dependencies
         working-directory: backend
-        run: pip install -r requirements.txt -t ../package
+        run: pip install -r requirements.txt
 
-      # Build frontend (if needed)
-      - name: Build frontend
-        working-directory: frontend
-        run: |
-          npm install
-          npm run build
-
-      # Prepare ZIP package for deployment
+      # Create deployment directory structure
       - name: Prepare deployment package
         run: |
-          mkdir deploy
+          mkdir -p deploy
           cp -r backend/* deploy/
-          cp -r package deploy/
-          cp -r frontend/build deploy/static
+          cp Dockerfile deploy/
+          
+      # Create ZIP archive for deployment
+      - name: Create deployment archive
+        run: |
           cd deploy
-          zip -r ../app.zip .
+          Compress-Archive -Path * -DestinationPath ../app.zip
 
       # Deploy to Azure Web App
       - name: Deploy to Azure
