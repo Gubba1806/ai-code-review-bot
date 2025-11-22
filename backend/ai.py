@@ -26,7 +26,7 @@ produce a clear, structured code review covering:
 3) Code-style / maintainability suggestions
 4) Performance concerns
 5) Small concrete suggested fixes or code examples
-6) A short checklist for the author"""
+6) A short checklist for the author with details"""
 
 def generate_review(diff: str, pr_payload: dict = None) -> str:
     # Build a concise prompt that includes PR title + body if available
