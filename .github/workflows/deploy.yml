@@ -34,7 +34,7 @@ jobs:
       - name: Create deployment archive
         run: |
           cd deploy
-          Compress-Archive -Path * -DestinationPath ../app.zip
+          zip -r ../app.zip .
 
       # Deploy to Azure Web App
       - name: Deploy to Azure
