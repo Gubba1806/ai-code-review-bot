@@ -18,19 +18,20 @@ jobs:
         with:
           python-version: '3.10'
 
-      # Install backend dependencies
+      # Install dependencies into a "packages" folder that Azure will use
       - name: Install backend dependencies
-        working-directory: backend
-        run: pip install -r requirements.txt
+        run: |
+          mkdir -p packages
+          pip install --target packages -r backend/requirements.txt
 
-      # Create deployment directory structure
+      # Prepare deployment package
       - name: Prepare deployment package
         run: |
-          mkdir -p deploy
+          mkdir deploy
           cp -r backend/* deploy/
-          cp Dockerfile deploy/
-          
-      # Create ZIP archive for deployment
+          cp -r packages deploy/
+
+      # Create ZIP archive
       - name: Create deployment archive
         run: |
           cd deploy
