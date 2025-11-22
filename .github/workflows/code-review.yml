@@ -1,0 +1,50 @@
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Trigger code review
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEW_ENDPOINT: ${{ secrets.REVIEW_ENDPOINT }}
+        run: |
+          # Get PR details
+          PR_URL="${{ github.event.pull_request.url }}"
+          COMMENTS_URL="${{ github.event.pull_request.comments_url }}"
+          
+          # Create payload with PR information
+          PAYLOAD=$(cat <<EOF
+          {
+            "action": "opened",
+            "pull_request": {
+              "url": "$PR_URL",
+              "comments_url": "$COMMENTS_URL",
+              "title": "${{ github.event.pull_request.title }}",
+              "body": "${{ github.event.pull_request.body }}"
+            }
+          }
+          EOF
+          )
+          
+          # Call the review endpoint
+          if [ -z "$REVIEW_ENDPOINT" ]; then
+            echo "Error: REVIEW_ENDPOINT secret not set"
+            exit 1
+          fi
+          
+          echo "Sending review request to: $REVIEW_ENDPOINT"
+          curl -X POST "$REVIEW_ENDPOINT" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            -w "\nStatus: %{http_code}\n"
