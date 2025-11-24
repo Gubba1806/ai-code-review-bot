@@ -16,7 +16,7 @@ jobs:
 
       - name: Trigger code review
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
           REVIEW_ENDPOINT: ${{ secrets.REVIEW_ENDPOINT }}
         run: |
           # Get PR details
