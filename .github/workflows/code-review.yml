@@ -46,5 +46,6 @@ jobs:
           echo "Sending review request to: $REVIEW_ENDPOINT"
           curl -X POST "$REVIEW_ENDPOINT" \
             -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
             -d "$PAYLOAD" \
             -w "\nStatus: %{http_code}\n"
