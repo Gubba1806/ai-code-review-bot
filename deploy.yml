@@ -1,0 +1,37 @@
+name: Deploy to Azure Web App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Create deployment folder
+        run: |
+          mkdir deploy
+          cp -r backend/* deploy/
+          pip install --target deploy/.python_packages/lib/site-packages -r backend/requirements.txt
+
+      - name: Zip for deployment
+        run: |
+          cd deploy
+          zip -r ../app.zip .
+
+      - name: Deploy to Azure
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          package: app.zip
