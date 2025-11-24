@@ -22,7 +22,7 @@ jobs:
         run: |
           mkdir deploy
           cp -r backend/* deploy/
-          cp requirements.txt deploy/
+          cp backend/requirements.txt deploy/
 
       - name: Zip for deployment
         run: |
