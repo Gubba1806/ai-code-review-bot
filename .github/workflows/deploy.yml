@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,28 +16,19 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
-      # Install dependencies into a "packages" folder that Azure will use
-      - name: Install backend dependencies
-        run: |
-          mkdir -p packages
-          pip install --target packages -r backend/requirements.txt
-
-      # Prepare deployment package
-      - name: Prepare deployment package
+      - name: Create deployment folder
         run: |
           mkdir deploy
           cp -r backend/* deploy/
-          cp -r packages deploy/
+          cp requirements.txt deploy/
 
-      # Create ZIP archive
-      - name: Create deployment archive
+      - name: Zip for deployment
         run: |
           cd deploy
           zip -r ../app.zip .
 
-      # Deploy to Azure Web App
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v3
         with:
