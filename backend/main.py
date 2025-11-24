@@ -21,13 +21,18 @@ async def review_pr(request: Request):
 
     pr_url = pr.get("url")
     comments_url = pr.get("comments_url")
+    github_token = payload.get("github_token")
+    
     if not pr_url or not comments_url:
         raise HTTPException(status_code=400, detail="missing pr url or comments_url")
+    
+    if not github_token:
+        raise HTTPException(status_code=400, detail="missing github_token")
 
     try:
-        diff = fetch_pr_diff(pr_url)
+        diff = fetch_pr_diff(pr_url, token=github_token)
         ai_review = generate_review(diff, pr_payload=payload)
-        post_pr_comment(comments_url, ai_review)
+        post_pr_comment(comments_url, ai_review, token=github_token)
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 

@@ -23,7 +23,7 @@ jobs:
           PR_URL="${{ github.event.pull_request.url }}"
           COMMENTS_URL="${{ github.event.pull_request.comments_url }}"
           
-          # Create payload with PR information
+          # Create payload with PR information and GitHub token
           PAYLOAD=$(cat <<EOF
           {
             "action": "opened",
@@ -32,7 +32,8 @@ jobs:
               "comments_url": "$COMMENTS_URL",
               "title": "${{ github.event.pull_request.title }}",
               "body": "${{ github.event.pull_request.body }}"
-            }
+            },
+            "github_token": "$GITHUB_TOKEN"
           }
           EOF
           )
@@ -46,6 +47,5 @@ jobs:
           echo "Sending review request to: $REVIEW_ENDPOINT"
           curl -X POST "$REVIEW_ENDPOINT" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
             -d "$PAYLOAD" \
             -w "\nStatus: %{http_code}\n"
