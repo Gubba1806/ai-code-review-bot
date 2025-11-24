@@ -22,7 +22,7 @@ jobs:
         run: |
           mkdir deploy
           cp -r backend/* deploy/
-          cp backend/requirements.txt deploy/
+          pip install --target deploy/.python_packages/lib/site-packages -r backend/requirements.txt
 
       - name: Zip for deployment
         run: |
