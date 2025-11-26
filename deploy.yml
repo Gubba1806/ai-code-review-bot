@@ -21,8 +21,7 @@ jobs:
       - name: Create deployment folder
         run: |
           mkdir deploy
-          cp -r backend/* deploy/
-          pip install --target deploy/.python_packages/lib/site-packages -r backend/requirements.txt
+          cp -r backend/. deploy/
 
       - name: Zip for deployment
         run: |
